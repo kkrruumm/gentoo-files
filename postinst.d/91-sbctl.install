@@ -1,0 +1,12 @@
+#!/bin/sh
+IMAGE_FILE="/efi/EFI/boot/bootx64.efi" # edit if needed
+
+[ ! -f "$IMAGE_FILE" ] && { printf "Image file %s does not appear to exist. Nothing to do.\n" "$IMAGE_FILE" ; exit 0 ; }
+
+sbctl setup --print-state --json | grep '"installed": true' 1>/dev/null ||
+	{ echo "Secureboot key directory doesn't exist, not signing." ; exit 0 ; }
+
+sbctl list-files | grep "$IMAGE_FILE" 1>/dev/null &&
+	sbctl remove-file "$IMAGE_FILE" 1>/dev/null 
+
+sbctl sign -s "$IMAGE_FILE"
