@@ -1,0 +1,2 @@
+sys-apps/systemd-utils kernel-install boot ukify
+sys-kernel/installkernel dracut ukify uki
