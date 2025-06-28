@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+kernel_version="$1"
+output_dir="/efi/EFI/boot"
+original_uki="/usr/src/linux-${kernel_version}/arch/x86/boot/uki.efi"
+
+[ -f "$original_uki" ] ||
+	{ echo "There appears to be no UKI to copy. Nothing to do." ; exit 0 ; }
+
+[ -e "$output_dir" ] ||
+	{ echo "${output_dir} does not exist, creating it..." ; mkdir -p "$output_dir" ; }
+
+[ -f "$output_dir/bootx64.efi" ] &&
+	{ echo "${output_dir}/bootx64.efi already exists, removing it..." ; rm "$output_dir"/bootx64.efi ; }
+
+echo "Copying new UKI to ${output_dir}/bootx64.efi..."
+install -m 0644 "$original_uki" "${output_dir}/bootx64.efi"
+
+chown root:root "$output_dir"/bootx64.efi
+
+exit 0
